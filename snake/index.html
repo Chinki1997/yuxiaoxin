@@ -1,0 +1,121 @@
+<header class="not-home-page" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">一个只属于Yuxiaoxin的地方</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/games/"><i class="fa-fw fas fa-gamepad"></i><span> 游戏</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="page-site-info"><h1 id="site-title">贪吃蛇小游戏</h1></div></header>
+
+<main class="layout hide-aside">
+  <div id="page">
+    <article class="post-content" id="article-container">
+      <h1 class="page-title">贪吃蛇小游戏</h1>
+      <div class="game-content">
+        <div class="game-container" style="text-align:center;padding:20px;">
+          <div style="width:100%;height:500px;position:relative;">
+            <canvas id="snake" style="border:2px solid #000;"></canvas>
+          </div>
+          <p>使用方向键控制蛇的移动</p>
+        </div>
+        <div style="width:100%;height:500px;text-align:center;position:relative;">
+    <canvas id="snake" style="border:2px solid #000;"></canvas>
+</div>
+
+<script>
+window.onload = function() {
+    const canvas = document.getElementById('snake');
+    const ctx = canvas.getContext('2d');
+    
+    canvas.width = 400;
+    canvas.height = 400;
+    
+    const grid = 20;
+    let snake = [
+        {x: 160, y: 160},
+        {x: 140, y: 160},
+        {x: 120, y: 160}
+    ];
+    
+    let food = {
+        x: Math.floor(Math.random() * (canvas.width/grid)) * grid,
+        y: Math.floor(Math.random() * (canvas.height/grid)) * grid
+    };
+    
+    let dx = grid;
+    let dy = 0;
+    let score = 0;
+    
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowLeft' && dx === 0) {
+            dx = -grid;
+            dy = 0;
+        }
+        else if (e.key === 'ArrowUp' && dy === 0) {
+            dx = 0;
+            dy = -grid;
+        }
+        else if (e.key === 'ArrowRight' && dx === 0) {
+            dx = grid;
+            dy = 0;
+        }
+        else if (e.key === 'ArrowDown' && dy === 0) {
+            dx = 0;
+            dy = grid;
+        }
+    });
+    
+    function game() {
+        // 移动蛇
+        let head = {x: snake[0].x + dx, y: snake[0].y + dy};
+        
+        // 检查是否撞墙
+        if (head.x < 0 || head.x >= canvas.width || head.y < 0 || head.y >= canvas.height) {
+            alert('游戏结束！得分：' + score);
+            snake = [
+                {x: 160, y: 160},
+                {x: 140, y: 160},
+                {x: 120, y: 160}
+            ];
+            dx = grid;
+            dy = 0;
+            score = 0;
+            return;
+        }
+        
+        // 检查是否吃到食物
+        if (head.x === food.x && head.y === food.y) {
+            score += 10;
+            food = {
+                x: Math.floor(Math.random() * (canvas.width/grid)) * grid,
+                y: Math.floor(Math.random() * (canvas.height/grid)) * grid
+            };
+        } else {
+            snake.pop();
+        }
+        
+        snake.unshift(head);
+        
+        // 清空画布
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // 画蛇
+        ctx.fillStyle = 'green';
+        snake.forEach(function(segment) {
+            ctx.fillRect(segment.x, segment.y, grid-2, grid-2);
+        });
+        
+        // 画食物
+        ctx.fillStyle = 'red';
+        ctx.fillRect(food.x, food.y, grid-2, grid-2);
+        
+        // 显示分数
+        ctx.fillStyle = 'black';
+        ctx.font = '20px Arial';
+        ctx.fillText('得分: ' + score, 10, 30);
+    }
+    
+    setInterval(game, 100);
+};
+</script>
+
+      </div>
+    </article>
+  </div>
+</main>
+
+<nav id="pagination"><div class="pagination"></div></nav>
